@@ -6,6 +6,29 @@
 
 {% block body%}
 
-<h1>Hello World of Flask with inheritence</h1>
+<h1 id="main-page-heading">Research Output Evaluation System</h1>
+
+<div id="input-fields-section">
+    <div id="fields">
+         <div id="research-title-container">
+            <span name="title">Research Title</span>
+            <input type="text" name="" id="research-title">
+        </div>
+
+        <div id="author-name">
+            <span name="author-label">Author</span>
+            <input type="text" id="author-name-input">
+        </div>
+        <div>
+            <span>Field of Study</span>
+            <input type="text" id="study-field">
+        </div>
+        <div>
+            <span>Research Output</span>
+            <input type="text" id="research-output">
+        </div>
+       
+    </div>
+</div>
 
 {% endblock %}

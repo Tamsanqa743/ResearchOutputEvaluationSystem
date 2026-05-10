@@ -50,21 +50,7 @@ input {
       height: 300px;
       border-radius: 10px;
 }
-/* add border around fields*/
-#fields {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  width: 65%;
-  height: 50%;
 
-  padding: 25px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: white;
-
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
 
 .research-output-container{
   height: 70%;
@@ -86,4 +72,9 @@ input {
 
 span{
   padding: 5px;
+}
+
+.some-space{
+  display: flex;
+  height: 10px;
 }

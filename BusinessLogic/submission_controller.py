@@ -1,4 +1,5 @@
 from BusinessLogic.validator import validator
+from BusinessLogic.reviewer import reviewer
 import sqlite3
 
 class submission_controller():
@@ -13,6 +14,7 @@ class submission_controller():
         )
         """)
         self.db_connect.commit()
+        self.reviewer_object = ''
 
     def validate_data_format(self, data):
         '''Validate data format'''
@@ -31,6 +33,7 @@ class submission_controller():
         pass
 
     def assign_review(self):
+        self.reviewer_object = reviewer(' ')
         pass
     
     def start_evalaution(self):

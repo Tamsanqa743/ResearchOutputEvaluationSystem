@@ -2,6 +2,7 @@ from flask import Flask, render_template, url_for, request, flash
 from BusinessLogic.submission_controller import submission_controller
 import json
 import os
+import random
 
 template_dir = os.path.abspath('Presentation/templates/') # custom template directory path
 static_dir = os.path.abspath('Presentation/static/') # custom static directory path

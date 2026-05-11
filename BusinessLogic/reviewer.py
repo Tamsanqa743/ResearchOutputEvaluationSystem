@@ -1,8 +1,10 @@
+import random
 class reviewer:
 
-    def __init__(self):
-        pass
+    def __init__(name, self):
+        self.reviewer_id = name
+        self.workload = 0
 
-    def submit_score(score):
-        pass
-    
+    def submit_score(self):
+        '''Return score for review'''
+        return random.rand(10, 100)

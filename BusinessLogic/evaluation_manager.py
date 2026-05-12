@@ -34,9 +34,12 @@ class evaluation_manager:
     def notify_revision(self):
         pass
 
-    def save_score(self, final_score):
+    def save_score(self, final_score, research_id):
         try:    
-            self.cursor.execute('''INSERT INTO research_output(score) VALUES (?)''', (final_score))
+            self.cursor.execute('''UPDATE research
+            SET score = ?
+            WHERE id = ?
+            ''', (final_score, research_id))
             self.db_connect.commit()
             return True
         except:

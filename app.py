@@ -11,6 +11,7 @@ app.config['SECRET_KEY'] = 'DBHWGnxwhuxw802'
 
 submission_controller = submission_controller()
 
+
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -28,15 +29,12 @@ def submit_research():
         'field_of_study': field_of_study,
         'research_output': research_output
         })
-    if submission_controller.validate_data_format((combined_submission)):
-        operation_outcome = submission_controller.save_submission(combined_submission)
-        print('Operation outcome:', operation_outcome)
-        if operation_outcome:
-            flash('Submission Successful!', "success")
-        else: 
-            flash("Error Sumbitting. Try Again", "danger")
-    else:
-        flash('Data Format Validation Failed', "danger")
+    
+    submission_controller.submit_data(combined_submission)
+    return render_template('research_submitted.html')
+
+@app.route('/upload_new_output', methods=['POST'])
+def submit_new_research():
     return render_template('index.html')
 
 

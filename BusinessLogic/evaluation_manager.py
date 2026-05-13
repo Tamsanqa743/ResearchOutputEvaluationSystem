@@ -1,9 +1,13 @@
-import random
+from BusinessLogic.notification_service import notification_service
+import json
+
 
 class evaluation_manager:
 
     def __init__(self, db_cursor):
         self.cursor = db_cursor
+        self.score_arr = []
+        self.notification_service = notification_service()
 
     def calaculate_average(self, scores):
         '''Calculate average score from provided scores'''
@@ -12,35 +16,53 @@ class evaluation_manager:
             average += score
         return (average/len(scores))
 
-    def check_consensus(self, average_score):
+    def check_consensus(self):
+        '''check consensus'''
+        return True
+
+    def apply_rules(self, average_score):
         '''returns consensus on accpetance, rejection and revision'''
         if average_score < 45:
-            return 'reject'
+            return 'rejected'
         elif (average_score > 45 and average_score < 60):
             return 'revision'
         elif average_score > 60:
-            return 'accept'
+            return 'accepted'
 
-    def apply_rules(self):
-        '''rule check pass or fail'''
-        return bool(random.randint(0,1))
 
-    def notify_acceptance(self):
-        pass
-
-    def notify_rejection(self):
-        pass
-
-    def notify_revision(self):
-        pass
-
-    def save_score(self, final_score, research_id):
+    def save_score(self, scores, research_id):
         try:    
-            self.cursor.execute('''UPDATE research
-            SET score = ?
-            WHERE id = ?
-            ''', (final_score, research_id))
-            self.db_connect.commit()
+            self.cursor.execute('''UPDATE reviews
+            SET scores = ?
+            WHERE research_id = ?
+            ''', (scores, research_id))
+            self.cursor.commit()
             return True
-        except:
+        except Exception as e:
+            print(e)
             return False
+        
+    def start_evaluation(self, reviewers, submission_id):
+
+        decision = ''
+        for reviewer in reviewers:
+            reviewer_score = reviewer.submit_score()
+            self.score_arr.append(reviewer_score)
+            self.save_score(json.dumps(self.score_arr), submission_id )
+            average_score = self.calaculate_average(self.score_arr)
+            consensus = self.check_consensus() # not sure what this is supposed to do
+            decision = self.apply_rules(average_score) 
+
+        if decision == 'accepted':
+            self.notification_service.notify_acceptance()
+        elif decision == 'rejected':
+            self.notification_service.notify_rejection()
+        elif decision == 'revision':
+            self.notification_service.notify_revision()
+
+
+    @staticmethod
+    def submit_score(self, score):
+        '''add each reviewer score to score array'''
+        self.score_arr.append(score)
+  

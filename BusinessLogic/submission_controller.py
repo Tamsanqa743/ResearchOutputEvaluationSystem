@@ -1,6 +1,8 @@
 from BusinessLogic.validator import validator
 from BusinessLogic.reviewer import reviewer
 from BusinessLogic.reviewer_manager import reviewer_manager
+from BusinessLogic.evaluation_manager import evaluation_manager
+
 import sqlite3, json
 from flask import flash
 
@@ -45,13 +47,18 @@ class submission_controller():
         )
         """)
 
-        # self.cursor.executemany("""
-        # INSERT OR IGNORE INTO reviewers (id, name, workload, field_of_study)
-        # VALUES (?, ?, ?, ?)""", reviewers)
-
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS reviews (
+            review_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            research_id INTEGER NOT NULL,
+            scores TEXT NOT NULL,
+            FOREIGN KEY (research_id) REFERENCES research(id)
+        )
+        """)
         self.db_connect.commit()
         self.reviewer_manager = reviewer_manager(self.cursor)
-        self.reviewer_object = ''
+        self.final_reviewers = []
+        self.evaluation_manager = evaluation_manager(self.db_connect)
 
     def validate_data_format(self, data):
         '''Validate data format'''
@@ -71,7 +78,8 @@ class submission_controller():
             VALUES (?, ?, ?, ?, ?, ?)
             """, (processed_data['author'], processed_data['field_of_study'], processed_data['research_title'], 0, processed_data['research_output'], 0))
             self.db_connect.commit()
-            return True
+            submission_id = self.cursor.lastrowid
+            return True, submission_id
         except Exception as e:
             print(e)
             return False
@@ -83,10 +91,17 @@ class submission_controller():
     def submit_data(self, combined_submission):
         if self.validate_data_format((combined_submission)):
             operation_outcome = self.save_submission(combined_submission)
-            if operation_outcome:
+            submission_id = operation_outcome[1]
+            if operation_outcome[0]:
                 flash('Submission Successful!', "success")
                 available_reviewers = self.reviewer_manager.get_available_reviewers(combined_submission)
-                
+                print('Available reviewers:', available_reviewers[0])
+                for reviewer_candidate in available_reviewers:
+                    reviewer_instance = reviewer(reviewer_candidate[0], reviewer_candidate[1], reviewer_candidate[2], reviewer_candidate[3])
+                    self.final_reviewers.append(reviewer_instance)
+                    reviewer_instance.assign_review(submission_id)
+                    
+                self.evaluation_manager.start_evaluation(self.final_reviewers, submission_id)
                 
             else: 
                 flash("Error Sumbitting. Try Again", "danger")
@@ -95,9 +110,3 @@ class submission_controller():
             flash('Data Format Validation Failed', "danger")
             return False
 
-            
-    def get_data(self,research_id):
-         self.cursor.execute(
-        "SELECT * FROM research WHERE id = ?",
-        (research_id,)
-    )

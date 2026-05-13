@@ -28,5 +28,6 @@ class validator:
         '''perfrom validation'''
         try:
             if validate(instance=data, schema=schema): return True
-        except ValidationError:
+        except ValidationError as e:
+            print(e)
             return False

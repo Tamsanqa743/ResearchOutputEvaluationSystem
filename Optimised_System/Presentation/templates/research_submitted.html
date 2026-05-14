@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body%}
+
+<nav id="main-page-heading" class="">
+    <h1>Research Output Evaluation System</h1>
+</nav>
+
+<main>
+    <div id="input-fields-section">
+        <div class="fixed-top mt-5 d-flex flex-column align-items-center" style="z-index: 1050; pointer-events: none;">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show shadow d-flex justify-content-center" role="alert" style="pointer-events: auto; min-width: 300px;">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- <h1>Research Submitted</h1> -->
+        <div class="control-btns">
+            <!-- <form action="/analyse" method="POST">
+                <button class="btn btn-primary mb-5" type="submit" action="/analyse">Analyse File</button>
+            </form> -->
+            <form action="/upload_new_output" class="new-file ms-5" method="POST">
+                <button class="upload-new-file btn btn-secondary ml-5 mb-5">Submit New Research</button>
+            </form>
+        </div>
+        </div>
+        </div>
+    </div>
+</main>
+
+
+{% endblock %}

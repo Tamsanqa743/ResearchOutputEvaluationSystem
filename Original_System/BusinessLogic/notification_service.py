@@ -2,9 +2,6 @@ from flask import flash
 
 class notification_service:
 
-    def __init__(self):
-        pass
-
     def send_notification(self, notification_body):
         flash(notification_body, 'warning')
 

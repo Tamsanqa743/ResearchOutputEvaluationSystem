@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body%}
+
+<nav id="main-page-heading" class="">
+    <h1>Research Output Evaluation System</h1>
+</nav>
+
+<main>
+    <div id="input-fields-section">
+        <div class="fixed-top mt-5 d-flex flex-column align-items-center" style="z-index: 1050; pointer-events: none;">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show shadow d-flex justify-content-center" role="alert" style="pointer-events: auto; min-width: 300px;">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+        <form action="/submit_research" class="research-ouput" method="POST">
+            <div id="fields">
+                    <div id="research-title-container">
+                    <span name="title">Research Title</span>
+                    <input type="text" name="title" id="research-title" required>
+                </div>
+        
+                <div id="author-name">
+                    <span name="author-label">Author</span>
+                    <input type="text" id="author-name-input" name="author" required>
+                </div>
+                <div>
+                    <span>Field of Study</span>
+                    <input type="text" id="study-field" name="field-of-study" required>
+                </div>
+                <div class="research-output-container">
+                    <span>Research Output</span>
+                    <textarea type="text" id="research-output" minlength="10" name="research-ouput" required></textarea>
+                </div>
+                <div id="submit-btn-container">
+                <button type="submit" id="submit-btn" class="btn">Submit</button>
+            </form>
+        </div>
+        </div>
+    </div>
+</main>
+
+
+{% endblock %}

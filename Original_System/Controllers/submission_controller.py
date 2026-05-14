@@ -3,25 +3,28 @@ from BusinessLogic.reviewer import reviewer
 from BusinessLogic.reviewer_manager import reviewer_manager
 from BusinessLogic.evaluation_manager import evaluation_manager
 
-import sqlite3, json
+import sqlite3, json, os
 from flask import flash
 
 class submission_controller():
     def __init__(self):
+        self.BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        self.db_path = os.path.join(self.BASE_DIR, "..", "Data", "research.db")
         self.validator = validator()
-        self.db_connect = sqlite3.connect('research.db', check_same_thread=False)
+        self.db_connect = sqlite3.connect(self.db_path, check_same_thread=False)
         reviewers = [
-            (1, "Dr. Amelia Grant", 3, "Computer Science"),
-            (2, "Prof. Daniel Mokoena", 5, "Mechanical Engineering"),
-            (3, "Dr. Sophia Patel", 2, "Data Science"),
-            (4, "Dr. Michael Chen", 4, "Physics"),
-            (5, "Prof. Emily Ndlovu", 1, "Biotechnology"),
-            (6, "Dr. James Walker", 0, "Mathematics"),
-            (7, "Dr. Olivia Smith", 6, "Artificial Intelligence"),
-            (8, "Prof. Ethan Brown", 2, "Cybersecurity"),
-            (9, "Dr. Isabella Rossi", 3, "Environmental Science"),
-            (10, "Dr. Noah Williams", 1, "Economics"),
+            ("Dr. Amelia Grant", 3, "Computer Science"),
+            ("Prof. Daniel Mokoena", 5, "Mechanical Engineering"),
+            ("Dr. Sophia Patel", 2, "Data Science"),
+            ("Dr. Michael Chen", 4, "Physics"),
+            ("Prof. Emily Ndlovu", 1, "Biotechnology"),
+            ("Dr. James Walker", 0, "Mathematics"),
+            ("Dr. Olivia Smith", 6, "Artificial Intelligence"),
+            ("Prof. Ethan Brown", 2, "Cybersecurity"),
+            ("Dr. Isabella Rossi", 3, "Environmental Science"),
+            ("Dr. Noah Williams", 1, "Economics"),
         ]
+
         self.cursor = self.db_connect.cursor() # get database cursor
         self.cursor.execute("""
         CREATE TABLE IF NOT EXISTS reviewers (
@@ -59,6 +62,7 @@ class submission_controller():
         self.reviewer_manager = reviewer_manager(self.cursor)
         self.final_reviewers = []
         self.evaluation_manager = evaluation_manager(self.db_connect)
+        
 
     def validate_data_format(self, data):
         '''Validate data format'''
@@ -95,12 +99,11 @@ class submission_controller():
             if operation_outcome[0]:
                 flash('Submission Successful!', "success")
                 available_reviewers = self.reviewer_manager.get_available_reviewers(combined_submission)
-                print('Available reviewers:', available_reviewers[0])
+                print('Available reviewers:', available_reviewers)
                 for reviewer_candidate in available_reviewers:
                     reviewer_instance = reviewer(reviewer_candidate[0], reviewer_candidate[1], reviewer_candidate[2], reviewer_candidate[3])
                     self.final_reviewers.append(reviewer_instance)
-                    reviewer_instance.assign_review(submission_id)
-                    
+                    reviewer_instance.assign_review(submission_id)    
                 self.evaluation_manager.start_evaluation(self.final_reviewers, submission_id)
                 
             else: 

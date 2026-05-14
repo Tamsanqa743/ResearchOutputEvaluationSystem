@@ -60,9 +60,4 @@ class evaluation_manager:
         elif decision == 'revision':
             self.notification_service.notify_revision()
 
-
-    @staticmethod
-    def submit_score(self, score):
-        '''add each reviewer score to score array'''
-        self.score_arr.append(score)
-  
+        

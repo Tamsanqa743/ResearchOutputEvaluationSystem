@@ -11,7 +11,8 @@ class reviewer:
 
     def submit_score(self):
         '''Return score for review'''
-        return random.randint(10, 100)
+        score = random.randint(25, 100)
+        return score
     
     def assign_review(self, research_id):
         self.workload += 1

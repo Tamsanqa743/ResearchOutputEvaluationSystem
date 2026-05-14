@@ -1,6 +1,6 @@
 from .notification_service import notification_service
 import json
-
+from Benchmark.benchmark import benchmark
 
 class evaluation_manager:
 
@@ -33,7 +33,7 @@ class evaluation_manager:
         elif average_score > 60:
             return 'accepted'
         
-
+    @benchmark.track('start evaluation [optimized system]')
     def start_evaluation(self, reviewers, submission_id):
 
         decision = ''

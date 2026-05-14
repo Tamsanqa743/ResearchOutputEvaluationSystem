@@ -2,7 +2,7 @@ from BusinessLogic.validator import validator
 from BusinessLogic.reviewer import reviewer
 from BusinessLogic.reviewer_manager import reviewer_manager
 from BusinessLogic.evaluation_manager import evaluation_manager
-
+from Benchmark.benchmark import benchmark
 import sqlite3, json, os
 from flask import flash
 
@@ -91,7 +91,7 @@ class submission_controller():
 
 
 
-    
+    @benchmark.track("submit_data[original system]")
     def submit_data(self, combined_submission):
         if self.validate_data_format((combined_submission)):
             operation_outcome = self.save_submission(combined_submission)
@@ -99,7 +99,6 @@ class submission_controller():
             if operation_outcome[0]:
                 flash('Submission Successful!', "success")
                 available_reviewers = self.reviewer_manager.get_available_reviewers(combined_submission)
-                print('Available reviewers:', available_reviewers)
                 for reviewer_candidate in available_reviewers:
                     reviewer_instance = reviewer(reviewer_candidate[0], reviewer_candidate[1], reviewer_candidate[2], reviewer_candidate[3])
                     self.final_reviewers.append(reviewer_instance)

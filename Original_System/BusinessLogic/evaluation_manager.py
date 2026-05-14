@@ -1,6 +1,6 @@
 from BusinessLogic.notification_service import notification_service
 import json
-
+from Benchmark.benchmark import benchmark
 
 class evaluation_manager:
 
@@ -42,6 +42,7 @@ class evaluation_manager:
             print(e)
             return False
         
+    @benchmark.track('start evaluation flow [original system]')    
     def start_evaluation(self, reviewers, submission_id):
 
         decision = ''
